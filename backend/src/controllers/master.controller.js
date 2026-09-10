@@ -2,12 +2,7 @@ const masterRepo = require('../repositories/master.repository');
 
 const getAllParentDept = async (req, res) => {
   try {
-    const departments = await masterRepo.findAllParent();
-    const data = departments.map((dept) => ({
-      departmentId:   dept._id,
-      departmentName: dept.departmentName,
-      departmentLogo: dept.departmentLogo,
-    }));
+    const data = await masterRepo.getAllParentDepts();
     return res.status(200).json({ result: true, message: 'Parent departments fetched successfully', data });
   } catch (error) {
     return res.status(500).json({ result: false, message: error.message, data: null });
@@ -16,12 +11,7 @@ const getAllParentDept = async (req, res) => {
 
 const getChildDeptByParentId = async (req, res) => {
   try {
-    const children = await masterRepo.findChildrenByParent(req.query.deptId);
-    const data = children.map((child) => ({
-      childDeptId:    child._id,
-      ParentDeptId:   child.ParentDeptId,
-      departmentName: child.departmentName,
-    }));
+    const data = await masterRepo.getChildDeptsByParent(req.query.deptId);
     return res.status(200).json({ result: true, message: 'Child departments fetched successfully', data });
   } catch (error) {
     return res.status(500).json({ result: false, message: error.message, data: null });

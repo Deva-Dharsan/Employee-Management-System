@@ -1,14 +1,8 @@
-const bcrypt      = require('bcrypt');
-const jwt         = require('jsonwebtoken');
 const employeeRepo = require('../repositories/employee.repository');
-
-const SALT_ROUNDS = 10;
 
 const createEmployee = async (req, res) => {
   try {
-    const { emailId, password } = req.body;
-
-    const alreadyExists = await employeeRepo.findByEmail(emailId);
+    const alreadyExists = await employeeRepo.findByEmail(req.body.emailId);
     if (alreadyExists) {
       return res.status(400).json({
         result: false,
@@ -17,13 +11,7 @@ const createEmployee = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
-    const newEmployee = await employeeRepo.create({
-      ...req.body,
-      password: hashedPassword,
-    });
-
+    const newEmployee = await employeeRepo.createWithHashedPassword(req.body);
     return res.status(201).json({
       result: true,
       message: 'Employee created successfully',
@@ -66,13 +54,7 @@ const getEmployeeById = async (req, res) => {
 
 const updateEmployee = async (req, res) => {
   try {
-    const updateData = { ...req.body };
-
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, SALT_ROUNDS);
-    }
-
-    const updatedEmployee = await employeeRepo.update(req.query.id, updateData);
+    const updatedEmployee = await employeeRepo.updateWithHashedPassword(req.query.id, req.body);
     if (!updatedEmployee) {
       return res.status(404).json({ result: false, message: 'Employee not found', data: null });
     }
@@ -114,8 +96,8 @@ const loginEmployee = async (req, res) => {
       });
     }
 
-    const employee = await employeeRepo.findByEmail(userName);
-    if (!employee) {
+    const employeeData = await employeeRepo.verifyCredentialsAndSign(userName, password);
+    if (!employeeData) {
       return res.status(401).json({
         result: false,
         message: 'Invalid username or password',
@@ -123,22 +105,6 @@ const loginEmployee = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(password, employee.password);
-    if (!isMatch) {
-      return res.status(401).json({
-        result: false,
-        message: 'Invalid username or password',
-        data: null,
-      });
-    }
-
-    const token = jwt.sign(
-      { id: employee._id, role: employee.role },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    const employeeData = { ...employee.toObject(), token };
     return res.status(200).json({
       result: true,
       message: 'Login successful',
