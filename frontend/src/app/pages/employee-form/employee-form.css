@@ -1,0 +1,144 @@
+:host {
+  display: block;
+}
+
+.employee-form-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+  padding: 12px 0 24px;
+}
+
+.form-shell {
+  width: min(100%, 980px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.form-header {
+  padding: 28px 28px 12px;
+}
+
+.section-kicker {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.page-title {
+  margin: 0;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
+  color: var(--text);
+}
+
+.employee-form {
+  padding: 0 28px 28px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.field-group label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.field-group input,
+.field-group select {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field-group input:focus,
+.field-group select:focus {
+  border-color: rgba(153, 60, 29, 0.5);
+  box-shadow: 0 0 0 4px rgba(153, 60, 29, 0.08);
+}
+
+/* Validation */
+.required-star {
+  color: #e53e3e;
+  margin-left: 2px;
+}
+
+.input-error {
+  border-color: #e53e3e !important;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12) !important;
+}
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  color: #e53e3e;
+  font-weight: 600;
+  margin-top: -2px;
+  animation: slideDown 0.18s ease;
+}
+
+.error-msg::before {
+  content: '⚠';
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-header,
+  .employee-form {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+}

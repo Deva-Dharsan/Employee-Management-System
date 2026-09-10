@@ -1,0 +1,204 @@
+<section class="emp-dashboard">
+  
+  <!-- Hero Welcome Banner -->
+  <div class="hero-welcome-card">
+    <div class="hero-left">
+      <div class="welcome-avatar-wrapper">
+        <img
+          [src]="'https://ui-avatars.com/api/?name=' + (loggedUserData?.employeeName || 'Employee') + '&background=ffffff&color=1d6b99&size=90&bold=true'"
+          [alt]="loggedUserData?.employeeName"
+          class="welcome-avatar"
+        />
+        <span class="avatar-online-dot"></span>
+      </div>
+      <div class="welcome-text">
+        <div class="welcome-kicker">Workspace Dashboard</div>
+        <h2 class="welcome-name">Welcome back, {{ loggedUserData?.employeeName || 'Staff Member' }} 👋</h2>
+        <div class="welcome-badges">
+          <span class="role-pill">{{ loggedUserData?.role || 'Employee' }}</span>
+          <span class="dept-pill" *ngIf="departmentName || loggedUserData?.deptId">
+            🏢 {{ departmentName || ('Dept #' + loggedUserData?.deptId) }}
+          </span>
+          <span class="active-pill">🟢 Online</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <a routerLink="/employee/my-projects" class="hero-btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>My Projects</span>
+      </a>
+      <a routerLink="/employee/profile" class="hero-btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- KPI Metric Summary Grid -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon icon-assigned">📁</div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ totalAssignedProjects }}</span>
+        <span class="kpi-label">Total Assigned Projects</span>
+        <span class="kpi-hint">All historical & active projects</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-active">⚡</div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ activeProjectsCount }}</span>
+        <span class="kpi-label">Active Projects</span>
+        <span class="kpi-hint">Currently in progress</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-allocation">📊</div>
+      <div class="kpi-content">
+        <div class="allocation-val-row">
+          <span class="kpi-value">{{ totalAllocation }}%</span>
+          <span class="allocation-badge" [class.alloc-full]="totalAllocation >= 100" [class.alloc-normal]="totalAllocation < 100">
+            {{ totalAllocation >= 100 ? 'Full Load' : 'Available' }}
+          </span>
+        </div>
+        <span class="kpi-label">Workload Allocation</span>
+        <div class="allocation-bar-bg">
+          <div class="allocation-bar-fill" [style.width.%]="totalAllocation > 100 ? 100 : totalAllocation" [class.alloc-bar-warning]="totalAllocation > 100"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon icon-completed">✅</div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ completedProjectsCount }}</span>
+        <span class="kpi-label">Completed Projects</span>
+        <span class="kpi-hint">Successfully delivered</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Projects Section -->
+  <div class="dashboard-section">
+    <div class="section-top-row">
+      <div class="section-title-wrapper">
+        <h3 class="section-title">My Active Project Assignments</h3>
+        <p class="section-subtitle">Projects and assignments currently under your responsibility</p>
+      </div>
+      <a routerLink="/employee/my-projects" class="section-link">
+        <span>View All Projects</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Active Projects Cards / List -->
+    <div class="active-projects-grid" *ngIf="activeAssignments.length > 0">
+      <div class="project-card" *ngFor="let item of activeAssignments">
+        <div class="project-card-header">
+          <div class="proj-code-badge">{{ item.projectCode }}</div>
+          <div class="proj-badges">
+            <span class="badge-priority" [ngClass]="priorityClass(item.priority)">{{ item.priority }}</span>
+            <span class="badge-status" [ngClass]="assignStatusClass(item.status)">{{ item.status }}</span>
+          </div>
+        </div>
+
+        <h4 class="proj-title">{{ item.projectName }}</h4>
+        <p class="proj-client" *ngIf="item.clientName">
+          <span class="label-muted">Client:</span> {{ item.clientName }}
+        </p>
+
+        <p class="proj-desc" *ngIf="item.description">{{ item.description }}</p>
+
+        <div class="proj-meta-grid">
+          <div class="proj-meta-item">
+            <span class="meta-label">My Role</span>
+            <span class="meta-val highlight-role">{{ item.role }}</span>
+          </div>
+          <div class="proj-meta-item">
+            <span class="meta-label">Allocation</span>
+            <span class="meta-val">{{ item.allocation }}%</span>
+          </div>
+          <div class="proj-meta-item" *ngIf="item.startDate">
+            <span class="meta-label">Start Date</span>
+            <span class="meta-val">{{ item.startDate | date: 'dd MMM yyyy' }}</span>
+          </div>
+          <div class="proj-meta-item" *ngIf="item.endDate">
+            <span class="meta-label">Target End</span>
+            <span class="meta-val">{{ item.endDate | date: 'dd MMM yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state-card" *ngIf="activeAssignments.length === 0">
+      <div class="empty-icon">📁</div>
+      <h4>No Active Project Assignments</h4>
+      <p>You currently do not have any active project assignments. Once your administrator or project manager assigns you to a project, it will show up right here.</p>
+      <a routerLink="/employee/profile" class="empty-btn">View My Profile</a>
+    </div>
+  </div>
+
+  <!-- Quick Overview Cards (Bottom) -->
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="overview-card-header">
+        <div class="overview-icon">👤</div>
+        <h4>Quick Profile Overview</h4>
+      </div>
+      <div class="overview-fields">
+        <div class="overview-row">
+          <span class="o-label">Email</span>
+          <span class="o-value">{{ loggedUserData?.emailId || '—' }}</span>
+        </div>
+        <div class="overview-row">
+          <span class="o-label">Contact</span>
+          <span class="o-value">{{ loggedUserData?.contactNo || '—' }}</span>
+        </div>
+        <div class="overview-row">
+          <span class="o-label">Department</span>
+          <span class="o-value">{{ departmentName || (loggedUserData?.deptId ? 'Dept #' + loggedUserData?.deptId : 'Not Assigned') }}</span>
+        </div>
+        <div class="overview-row">
+          <span class="o-label">Account Role</span>
+          <span class="o-value capitalize">{{ loggedUserData?.role || 'Staff' }}</span>
+        </div>
+      </div>
+      <a routerLink="/employee/profile" class="overview-card-link">Open Full Profile Page →</a>
+    </div>
+
+    <div class="overview-card helper-card">
+      <div class="overview-card-header">
+        <div class="overview-icon">💡</div>
+        <h4>Employee Portal Quick Guide</h4>
+      </div>
+      <ul class="quick-guide-list">
+        <li>
+          <strong>Dashboard:</strong> Provides real-time visibility into your current assignments, project allocations, and capacity.
+        </li>
+        <li>
+          <strong>My Profile:</strong> View your official organization records, contact information, and department assignment.
+        </li>
+        <li>
+          <strong>My Projects:</strong> Access detailed specifications, client details, priorities, and schedules for all assigned projects.
+        </li>
+      </ul>
+      <a routerLink="/employee/my-projects" class="overview-card-link">Explore My Projects →</a>
+    </div>
+  </div>
+
+</section>
+

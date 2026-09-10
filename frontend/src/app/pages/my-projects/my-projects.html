@@ -1,0 +1,65 @@
+  <section class="my-projects-page">
+
+  <div class="page-header">
+    <div>
+      <p class="section-kicker">My work</p>
+      <h2 class="page-title">My Projects</h2>
+    </div>
+  </div>
+
+  <div *ngIf="!loaded" class="state-msg">Loading your projects...</div>
+
+  <div *ngIf="loaded && myProjects.length === 0" class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h3>No projects assigned yet.</h3>
+    <p>You haven't been assigned to any projects. Check back later.</p>
+  </div>
+
+  <div class="project-cards" *ngIf="loaded && myProjects.length > 0">
+    <div class="project-card" *ngFor="let p of myProjects">
+      <div class="card-top">
+        <div class="card-top-left">
+          <span class="project-code">{{ p.projectCode }}</span>
+          <h3 class="project-name">{{ p.projectName }}</h3>
+          <span class="client-name">{{ p.clientName }}</span>
+        </div>
+        <div class="card-badges">
+          <span class="badge" [ngClass]="priorityClass(p.priority)">{{ p.priority }}</span>
+          <span class="badge" [ngClass]="statusClass(p.projectStatus)">{{ p.projectStatus }}</span>
+        </div>
+      </div>
+
+      <p class="description" *ngIf="p.description">{{ p.description }}</p>
+
+      <div class="card-meta">
+        <div class="meta-row">
+          <span class="meta-label">Project Dates</span>
+          <span class="meta-value">{{ p.projectStart | date:'dd MMM yyyy' }} → {{ p.projectEnd | date:'dd MMM yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="assignment-section">
+        <h4 class="assign-title">My Assignment</h4>
+        <div class="assign-grid">
+          <div class="assign-item">
+            <span class="meta-label">My Role</span>
+            <span class="meta-value">{{ p.myRole }}</span>
+          </div>
+          <div class="assign-item">
+            <span class="meta-label">Allocation</span>
+            <span class="meta-value allocation-val">{{ p.allocation }}%</span>
+          </div>
+          <div class="assign-item">
+            <span class="meta-label">Status</span>
+            <span class="badge" [ngClass]="assignStatusClass(p.assignStatus)">{{ p.assignStatus }}</span>
+          </div>
+          <div class="assign-item">
+            <span class="meta-label">Assignment Period</span>
+            <span class="meta-value">{{ p.assignStart | date:'dd MMM yyyy' }} → {{ p.assignEnd | date:'dd MMM yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -1,0 +1,117 @@
+<section class="employee-form-page">
+  <div class="form-shell">
+    <div class="form-header">
+      <div>
+        <p class="section-kicker">Project management</p>
+        <h2 class="page-title">{{ isEditMode ? 'Edit Project' : 'New Project' }}</h2>
+      </div>
+    </div>
+
+    <form class="employee-form" #ngForm="ngForm" (ngSubmit)="onSave(ngForm)" novalidate>
+      <div class="form-grid">
+
+        <div class="field-group full-width">
+          <label for="projectName">Project Name <span class="required-star">*</span></label>
+          <input id="projectName" name="projectName" type="text"
+            [(ngModel)]="form.projectName" #pName="ngModel"
+            required minlength="3" placeholder="Enter project name"
+            [class.input-error]="pName.invalid && (pName.dirty || pName.touched)" />
+          @if (pName.invalid && (pName.dirty || pName.touched)) {
+            <div class="error-msg">
+              @if (pName.errors?.['required']) { <span>Project name is required.</span> }
+              @else if (pName.errors?.['minlength']) { <span>Must be at least 3 characters.</span> }
+            </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="projectCode">Project Code <span class="required-star">*</span></label>
+          <input id="projectCode" name="projectCode" type="text"
+            [(ngModel)]="form.projectCode" #pCode="ngModel"
+            required placeholder="e.g. PRJ-001"
+            [class.input-error]="pCode.invalid && (pCode.dirty || pCode.touched)" />
+          @if (pCode.invalid && (pCode.dirty || pCode.touched)) {
+            <div class="error-msg"><span>Project code is required.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="clientName">Client Name <span class="required-star">*</span></label>
+          <input id="clientName" name="clientName" type="text"
+            [(ngModel)]="form.clientName" #cName="ngModel"
+            required placeholder="Enter client name"
+            [class.input-error]="cName.invalid && (cName.dirty || cName.touched)" />
+          @if (cName.invalid && (cName.dirty || cName.touched)) {
+            <div class="error-msg"><span>Client name is required.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="priority">Priority <span class="required-star">*</span></label>
+          <select id="priority" name="priority"
+            [(ngModel)]="form.priority" #priority="ngModel" required
+            [class.input-error]="priority.invalid && (priority.dirty || priority.touched)">
+            <option value="">Select priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
+          @if (priority.invalid && (priority.dirty || priority.touched)) {
+            <div class="error-msg"><span>Please select a priority.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="status">Status <span class="required-star">*</span></label>
+          <select id="status" name="status"
+            [(ngModel)]="form.status" #status="ngModel" required
+            [class.input-error]="status.invalid && (status.dirty || status.touched)">
+            <option value="">Select status</option>
+            <option value="Planning">Planning</option>
+            <option value="Active">Active</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+          @if (status.invalid && (status.dirty || status.touched)) {
+            <div class="error-msg"><span>Please select a status.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="startDate">Start Date <span class="required-star">*</span></label>
+          <input id="startDate" name="startDate" type="date"
+            [(ngModel)]="form.startDate" #sDate="ngModel" required
+            [class.input-error]="sDate.invalid && (sDate.dirty || sDate.touched)" />
+          @if (sDate.invalid && (sDate.dirty || sDate.touched)) {
+            <div class="error-msg"><span>Start date is required.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="endDate">End Date <span class="required-star">*</span></label>
+          <input id="endDate" name="endDate" type="date"
+            [(ngModel)]="form.endDate" #eDate="ngModel" required
+            [class.input-error]="eDate.invalid && (eDate.dirty || eDate.touched)" />
+          @if (eDate.invalid && (eDate.dirty || eDate.touched)) {
+            <div class="error-msg"><span>End date is required.</span></div>
+          }
+        </div>
+
+        <div class="field-group full-width">
+          <label for="description">Description</label>
+          <textarea id="description" name="description"
+            [(ngModel)]="form.description"
+            placeholder="Project description (optional)" rows="3"></textarea>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update Project' : 'Create Project' }}</button>
+      </div>
+    </form>
+  </div>
+</section>

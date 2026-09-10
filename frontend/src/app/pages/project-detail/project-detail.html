@@ -1,0 +1,87 @@
+<section class="detail-page" *ngIf="loaded">
+  <div class="detail-header">
+    <a routerLink="/admin/projects" class="back-link">← Back to Projects</a>
+    <button class="btn btn-primary" routerLink="/admin/project-form" [queryParams]="{id: project?._id}">Edit Project</button>
+  </div>
+
+  <div *ngIf="!project" class="state-msg">Project not found.</div>
+
+  <div *ngIf="project" class="detail-body">
+    <!-- Project Info Card -->
+    <div class="info-card">
+      <div class="info-card-header">
+        <div>
+          <p class="section-kicker">{{ project.projectCode }}</p>
+          <h2 class="card-title">{{ project.projectName }}</h2>
+          <p class="client-text">Client: <strong>{{ project.clientName }}</strong></p>
+        </div>
+        <div class="badge-group">
+          <span class="badge" [ngClass]="priorityClass(project.priority)">{{ project.priority }}</span>
+          <span class="badge" [ngClass]="statusClass(project.status)">{{ project.status }}</span>
+        </div>
+      </div>
+
+      <p class="description" *ngIf="project.description">{{ project.description }}</p>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Start Date</span>
+          <span class="meta-value">{{ project.startDate | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">End Date</span>
+          <span class="meta-value">{{ project.endDate | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Team Size</span>
+          <span class="meta-value">{{ team.length }} member{{ team.length !== 1 ? 's' : '' }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Created</span>
+          <span class="meta-value">{{ project.createdDate | date:'dd MMM yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="team-card">
+      <div class="team-header">
+        <h3>Assigned Team</h3>
+        <button class="btn btn-primary btn-sm" routerLink="/admin/assignment-form" [queryParams]="{projectId: project._id}">
+          + Assign Employee
+        </button>
+      </div>
+
+      <div *ngIf="team.length === 0" class="state-msg">No employees assigned yet.</div>
+
+      <div class="table-wrapper" *ngIf="team.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Employee</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Allocation</th>
+              <th>Status</th>
+              <th>Dates</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of team; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td><strong>{{ m.employeeName }}</strong></td>
+              <td>{{ m.emailId }}</td>
+              <td>{{ m.role }}</td>
+              <td><span class="allocation-pill">{{ m.allocation }}%</span></td>
+              <td><span class="badge" [ngClass]="assignStatusClass(m.status)">{{ m.status }}</span></td>
+              <td class="date-range">{{ m.startDate | date:'dd MMM yy' }} → {{ m.endDate | date:'dd MMM yy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div *ngIf="!loaded" class="state-msg loading-msg">Loading project details...</div>

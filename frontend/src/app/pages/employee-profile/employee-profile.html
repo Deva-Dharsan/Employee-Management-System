@@ -1,0 +1,173 @@
+<section class="profile-page">
+  <div class="profile-header">
+    <div class="header-text">
+      <p class="section-kicker">Employee Portal</p>
+      <h2 class="page-title">My Profile</h2>
+    </div>
+    <div class="header-actions" *ngIf="loaded && employee">
+      <a routerLink="/employee/my-projects" class="header-btn secondary-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>My Projects</span>
+      </a>
+      <a routerLink="/employee/dashboard" class="header-btn primary-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="!loaded" class="state-msg loading-container">
+    <div class="spinner"></div>
+    <p>Loading your profile details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="loaded && error && !employee" class="state-msg error-container">
+    <div class="error-icon">⚠️</div>
+    <p class="error-text">{{ error }}</p>
+    <button class="retry-btn" (click)="ngOnInit()">Retry</button>
+  </div>
+
+  <!-- Main Profile Content -->
+  <div *ngIf="employee" class="profile-content">
+    
+    <!-- Hero Profile Card -->
+    <div class="profile-hero-card">
+      <div class="hero-avatar-wrapper">
+        <img
+          [src]="'https://ui-avatars.com/api/?name=' + (employee.employeeName || 'Employee') + '&background=1d6b99&color=ffffff&size=120&bold=true'"
+          [alt]="employee.employeeName"
+          class="hero-avatar"
+        />
+        <span class="active-badge-dot" title="Active Employee"></span>
+      </div>
+
+      <div class="hero-details">
+        <div class="hero-name-row">
+          <h3 class="hero-name">{{ employee.employeeName }}</h3>
+          <span class="role-badge">{{ employee.role || 'Staff Member' }}</span>
+        </div>
+        <p class="hero-email">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          {{ employee.emailId }}
+        </p>
+        <div class="hero-meta-tags">
+          <span class="meta-tag department-tag" *ngIf="departmentName || employee.deptId">
+            🏢 {{ departmentName || ('Dept #' + employee.deptId) }}
+          </span>
+          <span class="meta-tag status-tag">🟢 Active Status</span>
+          <span class="meta-tag join-tag" *ngIf="employee.createdDate">
+            📅 Joined {{ employee.createdDate | date: 'MMM yyyy' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="profile-stats-grid">
+      <div class="profile-stat-card">
+        <div class="stat-icon stat-icon-projects">📁</div>
+        <div class="stat-details">
+          <span class="stat-value">{{ totalAssignedProjects }}</span>
+          <span class="stat-label">Assigned Projects</span>
+        </div>
+      </div>
+      <div class="profile-stat-card">
+        <div class="stat-icon stat-icon-active">⚡</div>
+        <div class="stat-details">
+          <span class="stat-value">{{ activeAssignmentsCount }}</span>
+          <span class="stat-label">Active Assignments</span>
+        </div>
+      </div>
+      <div class="profile-stat-card">
+        <div class="stat-icon stat-icon-status">🛡️</div>
+        <div class="stat-details">
+          <span class="stat-value">{{ employee.role || 'Staff' }}</span>
+          <span class="stat-label">Portal Role</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Information Sections Grid -->
+    <div class="profile-sections-grid">
+      
+      <!-- Personal & Contact Details -->
+      <div class="info-section-card">
+        <div class="section-card-header">
+          <div class="section-icon">👤</div>
+          <h4>Personal & Contact Details</h4>
+        </div>
+        <div class="fields-list">
+          <div class="field-item">
+            <span class="field-label">Full Name</span>
+            <span class="field-value">{{ employee.employeeName || '—' }}</span>
+          </div>
+          <div class="field-item">
+            <span class="field-label">Email Address</span>
+            <span class="field-value">{{ employee.emailId || '—' }}</span>
+          </div>
+          <div class="field-item">
+            <span class="field-label">Contact Number</span>
+            <span class="field-value">{{ employee.contactNo || '—' }}</span>
+          </div>
+          <div class="field-item">
+            <span class="field-label">Gender</span>
+            <span class="field-value capitalize">{{ employee.gender || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organizational & Department Details -->
+      <div class="info-section-card">
+        <div class="section-card-header">
+          <div class="section-icon">🏢</div>
+          <h4>Department & Organization</h4>
+        </div>
+        <div class="fields-list">
+          <div class="field-item">
+            <span class="field-label">Assigned Department</span>
+            <span class="field-value highlight-value">
+              {{ departmentName || (employee.deptId ? 'Dept #' + employee.deptId : 'Not Assigned') }}
+            </span>
+          </div>
+          <div class="field-item" *ngIf="parentDepartmentName">
+            <span class="field-label">Parent Division</span>
+            <span class="field-value">{{ parentDepartmentName }}</span>
+          </div>
+          <div class="field-item">
+            <span class="field-label">Job Role</span>
+            <span class="field-value">{{ employee.role || 'Employee' }}</span>
+          </div>
+          <div class="field-item">
+            <span class="field-label">Date Joined</span>
+            <span class="field-value">{{ (employee.createdDate | date: 'dd MMMM yyyy') || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Read-Only Notice -->
+    <div class="read-only-banner">
+      <div class="banner-icon">🔒</div>
+      <div class="banner-content">
+        <strong>View-Only Profile</strong>
+        <p>Employee profiles are managed by organization administrators. If any details need to be updated, please reach out to your HR or System Admin.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+

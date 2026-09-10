@@ -1,0 +1,67 @@
+<section class="employee-page">
+  <div class="page-header">
+    <div>
+      <p class="section-kicker">Team overview</p>
+      <h2 class="page-title">Employees</h2>
+    </div>
+    <button type="button" class="btn btn-primary" routerLink="/admin/new-employee">
+      <span class="btn-icon">+</span>
+      Add Employee
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Employee Records</h3>
+      <span class="table-badge">{{ employeeList.length }} Active</span>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="!loaded" class="state-msg">
+      Loading employees...
+    </div>
+
+    <!-- Error state -->
+    <div *ngIf="loaded && errorMessage" class="state-msg error-msg">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="loaded && !errorMessage && employeeList.length === 0" class="state-msg">
+      No employees found. <a routerLink="/admin/new-employee">Add one now.</a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper" *ngIf="loaded && employeeList.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Role</th>
+            <th>Gender</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of employeeList; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ emp.employeeName }}</td>
+            <td>{{ emp.emailId }}</td>
+            <td>{{ emp.contactNo }}</td>
+            <td>{{ emp.role || '—' }}</td>
+            <td>{{ emp.gender }}</td>
+            <td>
+              <div class="action-group">
+                <button type="button" class="table-btn edit-btn" (click)="onEdit(emp._id)">Edit</button>
+                <button type="button" class="table-btn delete-btn" (click)="onDelete(emp._id)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

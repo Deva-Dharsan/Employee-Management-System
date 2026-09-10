@@ -1,0 +1,63 @@
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <p class="section-kicker">Team assignments</p>
+      <h2 class="page-title">Assignments</h2>
+    </div>
+    <button type="button" class="btn btn-primary" routerLink="/admin/assignment-form">
+      <span class="btn-icon">+</span> New Assignment
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>All Assignments</h3>
+      <span class="table-badge">{{ assignments.length }} Total</span>
+    </div>
+
+    <div *ngIf="!loaded" class="state-msg">Loading assignments...</div>
+    <div *ngIf="loaded && errorMessage" class="state-msg error-msg">{{ errorMessage }}</div>
+    <div *ngIf="loaded && !errorMessage && assignments.length === 0" class="state-msg">
+      No assignments yet. <a routerLink="/admin/assignment-form">Create one.</a>
+    </div>
+
+    <div class="table-wrapper" *ngIf="loaded && assignments.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Employee</th>
+            <th>Project</th>
+            <th>Role</th>
+            <th>Allocation</th>
+            <th>Status</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of assignments; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td><strong>{{ a.employeeName }}</strong></td>
+            <td>
+              <span class="project-name">{{ a.projectName }}</span>
+              <span class="project-code">{{ a.projectCode }}</span>
+            </td>
+            <td>{{ a.role }}</td>
+            <td><span class="allocation-pill">{{ a.allocation }}%</span></td>
+            <td><span class="badge" [ngClass]="statusClass(a.status)">{{ a.status }}</span></td>
+            <td>{{ a.startDate | date:'dd MMM yyyy' }}</td>
+            <td>{{ a.endDate | date:'dd MMM yyyy' }}</td>
+            <td>
+              <div class="action-group">
+                <button type="button" class="table-btn edit-btn" (click)="onEdit(a._id)">Edit</button>
+                <button type="button" class="table-btn delete-btn" (click)="onDelete(a._id)">Remove</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

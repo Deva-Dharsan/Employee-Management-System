@@ -1,0 +1,49 @@
+<div class="login-shell">
+  <div class="login-card">
+    <aside class="brand-panel">
+      <div class="brand-mark">EMS</div>
+      <p class="eyebrow">Employee management</p>
+      <h1>Welcome to your workspace</h1>
+      <p class="tagline">
+        Organize employees, projects, and daily operations in one calm, efficient place.
+      </p>
+
+      <ul class="feature-list">
+        <li>Team scheduling</li>
+        <li>Project allocation overview</li>
+        <li>Employee records at a glance</li>
+      </ul>
+    </aside>
+
+    <section class="form-panel">
+      <div class="form-header">
+        <p class="eyebrow eyebrow-dark">Welcome back</p>
+        <h2>Sign in</h2>
+      </div>
+
+      <form class="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="userName" name="userName" [(ngModel)]="loginObj.userName" type="text"
+            placeholder="Enter your username" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" [(ngModel)]="loginObj.password" type="password"
+            placeholder="Enter your password" />
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" (click)="onLogin()">Login</button>
+      </form>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,135 @@
+<section class="employee-form-page">
+  <div class="form-shell">
+    <div class="form-header">
+      <div>
+        <p class="section-kicker">Employee management</p>
+        <h2 class="page-title">{{ isEditMode ? 'Edit Employee' : 'Add Employee' }}</h2>
+      </div>
+    </div>
+
+    <form class="employee-form" #empForm="ngForm" (ngSubmit)="onSaveEmp(empForm)" novalidate>
+      <div class="form-grid">
+
+        <div class="field-group full-width">
+          <label for="employeeName">Employee Name <span class="required-star">*</span></label>
+          <input id="employeeName" name="employeeName" type="text" [(ngModel)]="employeeForm.employeeName"
+            #empName="ngModel" required minlength="3" pattern="^[a-zA-Z\s]+$" placeholder="Enter employee name"
+            [class.input-error]="empName.invalid && (empName.dirty || empName.touched)" />
+          @if (empName.invalid && (empName.dirty || empName.touched)) {
+          <div class="error-msg">
+            @if (empName.errors?.['required']) { <span>Name is required.</span> }
+            @else if (empName.errors?.['minlength']) { <span>Name must be at least 3 characters.</span> }
+            @else if (empName.errors?.['pattern']) { <span>Name can only contain letters and spaces.</span> }
+          </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="emailId">Email <span class="required-star">*</span></label>
+          <input id="emailId" name="emailId" type="email" [(ngModel)]="employeeForm.emailId" #email="ngModel" required
+            pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$" placeholder="example@gmail.com"
+            [class.input-error]="email.invalid && (email.dirty || email.touched)" />
+          @if (email.invalid && (email.dirty || email.touched)) {
+          <div class="error-msg">
+            @if (email.errors?.['required']) { <span>Email is required.</span> }
+            @else if (email.errors?.['pattern']) { <span>Enter a valid Gmail address (e.g. name&#64;gmail.com).</span> }
+          </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="contactNo">Contact Number <span class="required-star">*</span></label>
+          <input id="contactNo" name="contactNo" type="tel" [(ngModel)]="employeeForm.contactNo" #contact="ngModel"
+            required pattern="^[6-9][0-9]{9}$" placeholder="Enter 10-digit mobile number"
+            [class.input-error]="contact.invalid && (contact.dirty || contact.touched)" />
+          @if (contact.invalid && (contact.dirty || contact.touched)) {
+          <div class="error-msg">
+            @if (contact.errors?.['required']) { <span>Contact number is required.</span> }
+            @else if (contact.errors?.['pattern']) { <span>Enter a valid 10-digit Indian mobile number.</span> }
+          </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="parentDepartment">Parent Department <span class="required-star">*</span></label>
+          <select id="parentDepartment" name="parentDepartment" [(ngModel)]="employeeForm.parentDepartment"
+            #parentDept="ngModel" required (change)="onChangeParent($event)"
+            [class.input-error]="parentDept.invalid && (parentDept.dirty || parentDept.touched)">
+            <option value="">Select parent department</option>
+            @for(item of parentDeptList(); track $index) {
+            <option [value]="item.departmentId">{{item.departmentName}}</option>
+            }
+          </select>
+          @if (parentDept.invalid && (parentDept.dirty || parentDept.touched)) {
+          <div class="error-msg"><span>Please select a parent department.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="childDepartment">Child Department <span class="required-star">*</span></label>
+          <select id="childDepartment" name="childDepartment" [(ngModel)]="employeeForm.childDepartment"
+            #childDept="ngModel" required (change)="onChildDepartmentChange()"
+            [class.input-error]="childDept.invalid && (childDept.dirty || childDept.touched)">
+            <option value="">Select child department</option>
+            @for (item of childDeptList(); track $index) {
+            <option [value]="item.childDeptId">{{item.departmentName}}</option>
+            }
+          </select>
+          @if (childDept.invalid && (childDept.dirty || childDept.touched)) {
+          <div class="error-msg"><span>Please select a child department.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="gender">Gender <span class="required-star">*</span></label>
+          <select id="gender" name="gender" [(ngModel)]="employeeForm.gender" #gender="ngModel" required
+            [class.input-error]="gender.invalid && (gender.dirty || gender.touched)">
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          @if (gender.invalid && (gender.dirty || gender.touched)) {
+          <div class="error-msg"><span>Please select a gender.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="role">Role <span class="required-star">*</span></label>
+          <input id="role" name="role" type="text" [(ngModel)]="employeeForm.role" #role="ngModel" required
+            minlength="2" placeholder="Enter role" [class.input-error]="role.invalid && (role.dirty || role.touched)" />
+          @if (role.invalid && (role.dirty || role.touched)) {
+          <div class="error-msg">
+            @if (role.errors?.['required']) { <span>Role is required.</span> }
+            @else if (role.errors?.['minlength']) { <span>Role must be at least 2 characters.</span> }
+          </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="password">Password <span class="required-star">*</span></label>
+          <input id="password" name="password" type="password" [(ngModel)]="employeeForm.password" #pwd="ngModel"
+            required minlength="6" pattern="^(?=.*[A-Za-z])(?=.*\d).{6,}$"
+            placeholder="Min 6 chars, letters &amp; numbers"
+            [class.input-error]="pwd.invalid && (pwd.dirty || pwd.touched)" />
+          @if (pwd.invalid && (pwd.dirty || pwd.touched)) {
+          <div class="error-msg">
+            @if (pwd.errors?.['required']) { <span>Password is required.</span> }
+            @else if (pwd.errors?.['minlength']) { <span>Password must be at least 6 characters.</span> }
+            @else if (pwd.errors?.['pattern']) { <span>Password must contain at least one letter and one number.</span>
+            }
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">
+          {{ isEditMode ? 'Update Employee' : 'Save Employee' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
