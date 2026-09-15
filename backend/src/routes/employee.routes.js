@@ -7,6 +7,8 @@ const {
   updateEmployee,
   deleteEmployee,
   loginEmployee,
+  refreshToken,
+  logout,
 } = require("../controllers/employee.controller");
 const {
   validateCreateEmployee,
@@ -24,5 +26,9 @@ router.put("/UpdateEmployee", validateUpdateEmployee, updateEmployee);
 router.delete("/DeleteEmployee", deleteEmployee);
 
 router.post("/login", loginEmployee);
+
+router.post("/refresh-token", refreshToken);
+
+router.post("/logout", logout);
 
 module.exports = router;

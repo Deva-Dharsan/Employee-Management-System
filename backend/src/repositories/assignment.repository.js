@@ -1,6 +1,5 @@
 const Assignment = require('../models/Assignment.model');
 
-// ── Mongoose queries ───────────────────────────────────────────────────────────
 
 const findAll = () =>
   Assignment.find().sort({ createdDate: -1 });
@@ -17,9 +16,7 @@ const findByProject = (projectId) =>
 const findByEmployee = (employeeId) =>
   Assignment.find({ employeeId });
 
-// ── Business logic ─────────────────────────────────────────────────────────────
 
-// Validate, check duplicates and allocation cap, then create
 const createAssignment = async (data) => {
   const { employeeId, projectId, allocation, startDate, endDate } = data;
 
@@ -47,7 +44,7 @@ const createAssignment = async (data) => {
   return { data: newAssignment };
 };
 
-// Validate, check allocation cap (excluding current record), then update
+
 const updateAssignment = async (id, data) => {
   const { allocation, startDate, endDate, employeeId } = data;
 

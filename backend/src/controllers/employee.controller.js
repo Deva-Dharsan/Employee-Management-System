@@ -1,4 +1,4 @@
-const employeeRepo = require('../repositories/employee.repository');
+const employeeRepo = require("../repositories/employee.repository");
 
 const createEmployee = async (req, res) => {
   try {
@@ -6,7 +6,7 @@ const createEmployee = async (req, res) => {
     if (alreadyExists) {
       return res.status(400).json({
         result: false,
-        message: 'Email already registered. Please use a different email.',
+        message: "Email already registered. Please use a different email.",
         data: null,
       });
     }
@@ -14,12 +14,13 @@ const createEmployee = async (req, res) => {
     const newEmployee = await employeeRepo.createWithHashedPassword(req.body);
     return res.status(201).json({
       result: true,
-      message: 'Employee created successfully',
+      message: "Employee created successfully",
       data: newEmployee,
     });
-
   } catch (error) {
-    return res.status(500).json({ result: false, message: error.message, data: null });
+    return res
+      .status(500)
+      .json({ result: false, message: error.message, data: null });
   }
 };
 
@@ -28,11 +29,13 @@ const getAllEmployees = async (req, res) => {
     const employees = await employeeRepo.findAll();
     return res.status(200).json({
       result: true,
-      message: 'Employees fetched successfully',
+      message: "Employees fetched successfully",
       data: employees,
     });
   } catch (error) {
-    return res.status(500).json({ result: false, message: error.message, data: null });
+    return res
+      .status(500)
+      .json({ result: false, message: error.message, data: null });
   }
 };
 
@@ -40,31 +43,42 @@ const getEmployeeById = async (req, res) => {
   try {
     const employee = await employeeRepo.findById(req.query.id);
     if (!employee) {
-      return res.status(404).json({ result: false, message: 'Employee not found', data: null });
+      return res
+        .status(404)
+        .json({ result: false, message: "Employee not found", data: null });
     }
     return res.status(200).json({
       result: true,
-      message: 'Employee fetched successfully',
+      message: "Employee fetched successfully",
       data: employee,
     });
   } catch (error) {
-    return res.status(500).json({ result: false, message: error.message, data: null });
+    return res
+      .status(500)
+      .json({ result: false, message: error.message, data: null });
   }
 };
 
 const updateEmployee = async (req, res) => {
   try {
-    const updatedEmployee = await employeeRepo.updateWithHashedPassword(req.query.id, req.body);
+    const updatedEmployee = await employeeRepo.updateWithHashedPassword(
+      req.query.id,
+      req.body,
+    );
     if (!updatedEmployee) {
-      return res.status(404).json({ result: false, message: 'Employee not found', data: null });
+      return res
+        .status(404)
+        .json({ result: false, message: "Employee not found", data: null });
     }
     return res.status(200).json({
       result: true,
-      message: 'Employee updated successfully',
+      message: "Employee updated successfully",
       data: updatedEmployee,
     });
   } catch (error) {
-    return res.status(500).json({ result: false, message: error.message, data: null });
+    return res
+      .status(500)
+      .json({ result: false, message: error.message, data: null });
   }
 };
 
@@ -72,15 +86,19 @@ const deleteEmployee = async (req, res) => {
   try {
     const deleted = await employeeRepo.remove(req.query.id);
     if (!deleted) {
-      return res.status(404).json({ result: false, message: 'Employee not found', data: null });
+      return res
+        .status(404)
+        .json({ result: false, message: "Employee not found", data: null });
     }
     return res.status(200).json({
       result: true,
-      message: 'Employee deleted successfully',
+      message: "Employee deleted successfully",
       data: null,
     });
   } catch (error) {
-    return res.status(500).json({ result: false, message: error.message, data: null });
+    return res
+      .status(500)
+      .json({ result: false, message: error.message, data: null });
   }
 };
 
@@ -91,26 +109,74 @@ const loginEmployee = async (req, res) => {
     if (!userName || !password) {
       return res.status(400).json({
         result: false,
-        message: 'Username and password are required',
+        message: "Username and password are required",
         data: null,
       });
     }
 
-    const employeeData = await employeeRepo.verifyCredentialsAndSign(userName, password);
+    const employeeData = await employeeRepo.verifyCredentialsAndSign(
+      userName,
+      password,
+    );
     if (!employeeData) {
       return res.status(401).json({
         result: false,
-        message: 'Invalid username or password',
+        message: "Invalid username or password",
         data: null,
       });
     }
 
     return res.status(200).json({
       result: true,
-      message: 'Login successful',
+      message: "Login successful",
       data: employeeData,
     });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ result: false, message: error.message, data: null });
+  }
+};
 
+const refreshToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    
+    if (!refreshToken) {
+      return res.status(401).json({ result: false, message: 'Refresh token is required', data: null });
+    }
+
+    const data = await employeeRepo.verifyRefreshToken(refreshToken);
+    
+    if (!data) {
+      return res.status(403).json({ result: false, message: 'Invalid or expired refresh token', data: null });
+    }
+
+    return res.status(200).json({
+      result: true,
+      message: 'Token refreshed successfully',
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({ result: false, message: error.message, data: null });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const { employeeId } = req.body;
+    
+    if (!employeeId) {
+      return res.status(400).json({ result: false, message: 'Employee ID is required', data: null });
+    }
+
+    await employeeRepo.removeRefreshToken(employeeId);
+    
+    return res.status(200).json({
+      result: true,
+      message: 'Logged out successfully',
+      data: null,
+    });
   } catch (error) {
     return res.status(500).json({ result: false, message: error.message, data: null });
   }
@@ -123,4 +189,6 @@ module.exports = {
   updateEmployee,
   deleteEmployee,
   loginEmployee,
+  refreshToken,
+  logout,
 };

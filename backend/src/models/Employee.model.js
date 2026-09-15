@@ -42,6 +42,11 @@ const EmployeeSchema = new mongoose.Schema(
     createdDate: {
       type: Date,
     },
+    
+    refreshToken: {
+      type: String,
+      default: null,
+    },
   }
 );
 

@@ -1,6 +1,5 @@
 const Project = require('../models/Project.model');
 
-// ── Mongoose queries ───────────────────────────────────────────────────────────
 
 const findAll = () =>
   Project.find().sort({ createdDate: -1 });
@@ -11,10 +10,7 @@ const findById = (id) =>
 const remove = (id) =>
   Project.findByIdAndDelete(id);
 
-// ── Business logic ─────────────────────────────────────────────────────────────
 
-// Validate dates, check duplicate code, then create
-// Returns { error } on failure, { data } on success
 const createProject = async (data) => {
   const { projectCode, startDate, endDate } = data;
 
@@ -28,7 +24,6 @@ const createProject = async (data) => {
   return { data: newProject };
 };
 
-// Validate dates if provided, then update
 const updateProject = async (id, data) => {
   const { startDate, endDate } = data;
 
