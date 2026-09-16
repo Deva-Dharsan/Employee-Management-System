@@ -1,0 +1,59 @@
+<section class="page-section">
+  <div class="page-header">
+    <div>
+      <p class="section-kicker">Project management</p>
+      <h2 class="page-title">Projects</h2>
+    </div>
+    <button type="button" class="btn btn-primary" routerLink="/admin/project-form">
+      <span class="btn-icon">+</span> New Project
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h3>All Projects</h3>
+      <span class="table-badge">{{ projectList.length }} Total</span>
+    </div>
+
+    <div *ngIf="!loaded" class="state-msg">Loading projects...</div>
+    <div *ngIf="loaded && errorMessage" class="state-msg error-msg">{{ errorMessage }}</div>
+    <div *ngIf="loaded && !errorMessage && projectList.length === 0" class="state-msg">
+      No projects yet. <a routerLink="/admin/project-form">Create one now.</a>
+    </div>
+
+    <div class="table-wrapper" *ngIf="loaded && projectList.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Project Name</th>
+            <th>Code</th>
+            <th>Client</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>End Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of projectList; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td><strong>{{ p.projectName }}</strong></td>
+            <td class="code-cell">{{ p.projectCode }}</td>
+            <td>{{ p.clientName }}</td>
+            <td><span class="badge" [ngClass]="priorityClass(p.priority)">{{ p.priority }}</span></td>
+            <td><span class="badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span></td>
+            <td>{{ p.endDate | date:'dd MMM yyyy' }}</td>
+            <td>
+              <div class="action-group">
+                <button type="button" class="table-btn view-btn" (click)="onView(p._id)">View</button>
+                <button type="button" class="table-btn edit-btn" (click)="onEdit(p._id)">Edit</button>
+                <button type="button" class="table-btn delete-btn" (click)="onDelete(p._id)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

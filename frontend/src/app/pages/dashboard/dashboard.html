@@ -1,0 +1,107 @@
+<section class="dashboard-page" *ngIf="loaded">
+
+  <div class="dash-header">
+    <div>
+      <p class="section-kicker">Overview</p>
+      <h2 class="page-title">Admin Dashboard</h2>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon emp-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Total Employees</span>
+        <span class="stat-value">{{ totalEmployees }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon proj-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Total Projects</span>
+        <span class="stat-value">{{ totalProjects }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon active-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Active Projects</span>
+        <span class="stat-value">{{ activeProjects }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon assign-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Total Assignments</span>
+        <span class="stat-value">{{ totalAssignments }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Overview Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Project Overview</h3>
+      <a routerLink="/admin/projects" class="view-all-link">View all →</a>
+    </div>
+
+    <div *ngIf="projectOverview.length === 0" class="state-msg">
+      No projects yet. <a routerLink="/admin/project-form">Create one.</a>
+    </div>
+
+    <div class="table-wrapper" *ngIf="projectOverview.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Client</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of projectOverview">
+            <td>
+              <div class="proj-name">{{ p.projectName }}</div>
+              <div class="proj-code">{{ p.projectCode }}</div>
+            </td>
+            <td>{{ p.clientName }}</td>
+            <td><span class="badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span></td>
+            <td><span class="badge" [ngClass]="priorityClass(p.priority)">{{ p.priority }}</span></td>
+            <td>
+              <span class="team-size">{{ p.teamSize }} member{{ p.teamSize !== 1 ? 's' : '' }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<div *ngIf="!loaded" class="state-msg loading-msg">Loading dashboard...</div>
+<div *ngIf="loaded && errorMessage" class="state-msg" style="color:#c0392b">{{ errorMessage }}</div>

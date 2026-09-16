@@ -1,0 +1,92 @@
+<section class="employee-form-page">
+  <div class="form-shell">
+    <div class="form-header">
+      <div>
+        <p class="section-kicker">Team management</p>
+        <h2 class="page-title">{{ isEditMode ? 'Edit Assignment' : 'New Assignment' }}</h2>
+      </div>
+    </div>
+
+    <form class="employee-form" #ngForm="ngForm" (ngSubmit)="onSave(ngForm)" novalidate>
+      <div class="form-grid">
+
+        <div class="field-group">
+          <label for="employeeId">Employee <span class="required-star">*</span></label>
+          <select id="employeeId" name="employeeId" [(ngModel)]="form.employeeId" #empField="ngModel" required
+            [class.input-error]="empField.invalid && (empField.dirty || empField.touched)">
+            <option value="">Select employee</option>
+            <option *ngFor="let e of employees" [value]="e._id">{{ e.employeeName }} ({{ e.role || e.emailId }})
+            </option>
+          </select>
+          @if (empField.invalid && (empField.dirty || empField.touched)) {
+          <div class="error-msg"><span>Please select an employee.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="projectId">Project <span class="required-star">*</span></label>
+          <select id="projectId" name="projectId" [(ngModel)]="form.projectId" #projField="ngModel" required
+            [class.input-error]="projField.invalid && (projField.dirty || projField.touched)">
+            <option value="">Select project</option>
+            <option *ngFor="let p of projects" [value]="p._id">{{ p.projectName }} ({{ p.projectCode }})</option>
+          </select>
+          @if (projField.invalid && (projField.dirty || projField.touched)) {
+          <div class="error-msg"><span>Please select a project.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="role">Role in Project <span class="required-star">*</span></label>
+          <input id="role" name="role" type="text" [(ngModel)]="form.role" #roleField="ngModel" required minlength="2"
+            placeholder="e.g. Frontend Developer"
+            [class.input-error]="roleField.invalid && (roleField.dirty || roleField.touched)" />
+          @if (roleField.invalid && (roleField.dirty || roleField.touched)) {
+          <div class="error-msg">
+            @if (roleField.errors?.['required']) { <span>Role is required.</span> }
+            @else if (roleField.errors?.['minlength']) { <span>Must be at least 2 characters.</span> }
+          </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="allocation">Allocation % <span class="required-star">*</span></label>
+          <input id="allocation" name="allocation" type="number" [(ngModel)]="form.allocation" #allocField="ngModel"
+            required min="1" max="100" placeholder="1 – 100"
+            [class.input-error]="allocField.invalid && (allocField.dirty || allocField.touched)" />
+          @if (allocField.invalid && (allocField.dirty || allocField.touched)) {
+          <div class="error-msg">
+            @if (allocField.errors?.['required']) { <span>Allocation is required.</span> }
+            @else if (allocField.errors?.['min'] || allocField.errors?.['max']) { <span>Allocation must be between 1 and
+              100.</span> }
+          </div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="startDate">Start Date <span class="required-star">*</span></label>
+          <input id="startDate" name="startDate" type="date" [(ngModel)]="form.startDate" #sDate="ngModel" required
+            [class.input-error]="sDate.invalid && (sDate.dirty || sDate.touched)" />
+          @if (sDate.invalid && (sDate.dirty || sDate.touched)) {
+          <div class="error-msg"><span>Start date is required.</span></div>
+          }
+        </div>
+
+        <div class="field-group">
+          <label for="endDate">End Date <span class="required-star">*</span></label>
+          <input id="endDate" name="endDate" type="date" [(ngModel)]="form.endDate" #eDate="ngModel" required
+            [class.input-error]="eDate.invalid && (eDate.dirty || eDate.touched)" />
+          @if (eDate.invalid && (eDate.dirty || eDate.touched)) {
+          <div class="error-msg"><span>End date is required.</span></div>
+          }
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary">{{ isEditMode ? 'Update Assignment' : 'Create Assignment'
+          }}</button>
+      </div>
+    </form>
+  </div>
+</section>
